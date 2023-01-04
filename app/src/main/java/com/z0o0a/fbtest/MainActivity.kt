@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             val inputId = binding.edittextId.text.toString()
             val inputPwd = binding.edittextPwd.text.toString()
 
-            signIn(inputId, inputPwd)
+            val loginResult = loginAccount(inputId, inputPwd)
         }
 
         binding.btnRegister.setOnClickListener {
@@ -34,34 +34,36 @@ class MainActivity : AppCompatActivity() {
             val inputPwd = binding.edittextPwd.text.toString()
 
             // Firebase에 회원가입 정보 보내기
-            createAccount(inputId, inputPwd)
-
-            // 회원가입 성공시 화면 넘어가기
-//            intent = Intent(this, UserPage::class.java)
-//            startActivity(intent)
+            registerAccount(inputId, inputPwd)
         }
 
     }
 
-    private fun signIn(email: String, password: String) {
+    private fun loginAccount(email: String, password: String){
         if (email.isNotEmpty() && password.isNotEmpty()) {
-            auth?.signInWithEmailAndPassword(email, password)?.addOnCompleteListener(this) { task ->
+            auth?.signInWithEmailAndPassword(email, password)?.addOnCompleteListener(this){ task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(baseContext, "로그인 성공", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+
                     intent = Intent(this, UserPage::class.java)
                     startActivity(intent)
                 } else {
-                    Toast.makeText(baseContext, "로그인 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    private fun createAccount(email: String, password: String) {
+    private fun registerAccount(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth?.createUserWithEmailAndPassword(email, password)?.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
+
+                    loginAccount(email, password)
+
+                    intent = Intent(this, UserPage::class.java)
+                    startActivity(intent)
                 } else {
                     Toast.makeText(this, "회원가입 실패", Toast.LENGTH_SHORT).show()
                 }
