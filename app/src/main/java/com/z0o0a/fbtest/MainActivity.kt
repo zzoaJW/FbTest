@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.z0o0a.fbtest.databinding.ActivityMainBinding
@@ -48,9 +51,11 @@ class MainActivity : AppCompatActivity() {
                     intent = Intent(this, UserPage::class.java)
                     startActivity(intent)
                 } else {
-                    Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "이메일 또는 비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show()
                 }
             }
+        } else{
+            Toast.makeText(this, "이메일 또는 비밀번호를 입력해주세요.", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -65,9 +70,24 @@ class MainActivity : AppCompatActivity() {
                     intent = Intent(this, UserPage::class.java)
                     startActivity(intent)
                 } else {
-                    Toast.makeText(this, "회원가입 실패", Toast.LENGTH_SHORT).show()
+                    when (task.exception) {
+                        is FirebaseAuthUserCollisionException -> { // 이미 가입된 이메일인 경우 (이메일이 식별자임)
+                            Toast.makeText(this, "이미 가입된 이메일입니다.", Toast.LENGTH_LONG).show()
+                        }
+                        is FirebaseAuthWeakPasswordException -> { // 비밀번호가 6자 미만인 경우
+                            Toast.makeText(this, "비밀번호를 6자 이상으로 설정해주세요.", Toast.LENGTH_LONG).show()
+                        }
+                        is FirebaseAuthInvalidCredentialsException -> { // 이메일 형식이 올바르지 않은 경우
+                            Toast.makeText(this, "이메일 형식을 확인해주세요.", Toast.LENGTH_LONG).show()
+                        }
+                        else -> {
+                            Toast.makeText(this, "회원가입 실패", Toast.LENGTH_LONG).show()
+                        }
+                    }
                 }
             }
+        } else{
+            Toast.makeText(this, "이메일 또는 비밀번호를 입력해주세요.", Toast.LENGTH_LONG).show()
         }
     }
 
