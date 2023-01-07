@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             val inputId = binding.edittextId.text.toString()
             val inputPwd = binding.edittextPwd.text.toString()
 
-            val loginResult = loginAccount(inputId, inputPwd)
+            loginAccount(inputId, inputPwd)
         }
 
         binding.btnRegister.setOnClickListener {
