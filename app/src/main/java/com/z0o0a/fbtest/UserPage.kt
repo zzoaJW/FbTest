@@ -24,24 +24,24 @@ class UserPage : AppCompatActivity() {
         db = Firebase.firestore
         user = Firebase.auth.currentUser
 
-        binding.txtUserInfo.text = user!!.email
+        loadUserData()
         loadData()
 
         binding.btnSaveDocument.setOnClickListener {
             val input1 = binding.edittextName.text.toString()
-            val input2 = binding.edittextAge.text.toString().toInt()
+            val input2 = binding.edittextYear.text.toString().toInt()
             val input3 = binding.edittextDesc.text.toString()
 
             saveDocument(input1, input2, input3)
-            loadData()
         }
 
         binding.btnSaveCollection.setOnClickListener {
             val input1 = binding.edittextName.text.toString()
-            val input2 = binding.edittextAge.text.toString().toInt()
+            val input2 = binding.edittextYear.text.toString().toInt()
             val input3 = binding.edittextDesc.text.toString()
 
             saveCollection(input1, input2, input3)
+            loadData()
         }
 
         binding.btnLogout.setOnClickListener {
@@ -72,14 +72,13 @@ class UserPage : AppCompatActivity() {
 
     private fun saveCollection(input1:String, input2:Int, input3:String){
         val temp = hashMapOf(
-            "name2" to input1,
-            "age2" to input2,
-            "desc2" to input3
+            "ripening period" to input2,
+            "taste desc" to input3
         )
 
 
         db!!.collection("users").document(user!!.uid)
-            .collection("tasting note").document("alcohol002")
+            .collection("tasting note").document(input1)
             .set(temp)
             .addOnSuccessListener {
                 Toast.makeText(this, "데이터 저장 성공", Toast.LENGTH_SHORT).show()
@@ -89,12 +88,24 @@ class UserPage : AppCompatActivity() {
             }
     }
 
+    private fun loadUserData(){
+        binding.txtUserInfo.text = user!!.email
+    }
+
     private fun loadData(){
         db!!.collection("users").document(user!!.uid)
-            .collection("tasting note").document("alcohol001")
+            .collection("tasting note")
+            .orderBy("ripening period")
             .get()
             .addOnSuccessListener { result ->
-                binding.txtUserDb.text = "${result.data.toString()}\n${result.data!!["name2"].toString()}"
+                var allDocu = ""
+
+                for (document in result) {
+                    allDocu += "[ ${document.id} ]\n" +
+                            "${document.data["ripening period"]}\n" +
+                            "${document.data["taste desc"]}\n\n"
+                }
+                binding.txtUserDb.text = allDocu
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(this, "데이터 불러오기 실패 : ${exception}", Toast.LENGTH_LONG).show()

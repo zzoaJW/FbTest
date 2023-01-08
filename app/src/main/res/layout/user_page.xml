@@ -21,11 +21,10 @@
         android:id="@+id/txt_user_db"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:text="DB가 없어요"
+        android:text=""
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view2" />
 
@@ -58,7 +57,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="@color/black"
-        android:hint="이름"
+        android:hint="술 이름"
         android:text=""
         android:textColor="@color/black"
         android:textColorHint="#CDCDCD"
@@ -68,14 +67,14 @@
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <EditText
-        android:id="@+id/edittext_age"
+        android:id="@+id/edittext_year"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="@color/black"
-        android:hint="나이"
+        android:hint="숙성 기간 (year)"
         android:text=""
         android:textColor="@color/black"
         android:textColorHint="#CDCDCD"
@@ -92,14 +91,14 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="@color/black"
-        android:hint="긴글 설명"
+        android:hint="맛 설명"
         android:text=""
         android:textColor="@color/black"
         android:textColorHint="#CDCDCD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_age" />
+        app:layout_constraintTop_toBottomOf="@+id/edittext_year" />
 
     <Button
         android:id="@+id/btn_logout"
@@ -135,4 +134,18 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_save_document" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading_anim"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2"
+        android:visibility="gone"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
