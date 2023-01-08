@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.*
@@ -26,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         auth = Firebase.auth
+
+        MobileAds.initialize(this){}
+        binding.adview.loadAd(AdRequest.Builder().build())
 
         binding.btnLogin.setOnClickListener {
             val inputId = binding.edittextId.text.toString()
