@@ -1,11 +1,13 @@
 package com.z0o0a.fbtest
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.z0o0a.fbtest.databinding.UserPageBinding
@@ -93,9 +95,10 @@ class UserPage : AppCompatActivity() {
     }
 
     private fun loadData(){
+        binding.loadingAnim.visibility = View.VISIBLE
+
         db!!.collection("users").document(user!!.uid)
             .collection("tasting note")
-            .orderBy("ripening period")
             .get()
             .addOnSuccessListener { result ->
                 var allDocu = ""
@@ -110,5 +113,7 @@ class UserPage : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Toast.makeText(this, "데이터 불러오기 실패 : ${exception}", Toast.LENGTH_LONG).show()
             }
+
+        binding.loadingAnim.visibility = View.GONE
     }
 }

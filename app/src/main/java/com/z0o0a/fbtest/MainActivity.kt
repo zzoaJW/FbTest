@@ -3,13 +3,16 @@ package com.z0o0a.fbtest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.z0o0a.fbtest.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -104,4 +107,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("fcm 테스트", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            Log.d("fcm 테스트", token.toString())
+            Toast.makeText(baseContext, token.toString(), Toast.LENGTH_SHORT).show()
+        })
+    }
 }
