@@ -3,11 +3,11 @@ package com.z0o0a.fbtest
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.z0o0a.fbtest.databinding.ActivityMainBinding
@@ -28,6 +28,9 @@ class MainActivity : AppCompatActivity() {
             val inputId = binding.edittextId.text.toString()
             val inputPwd = binding.edittextPwd.text.toString()
 
+            binding.loadingLayout.visibility = View.VISIBLE
+            this.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
             loginAccount(inputId, inputPwd)
         }
 
@@ -46,12 +49,22 @@ class MainActivity : AppCompatActivity() {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             auth?.signInWithEmailAndPassword(email, password)?.addOnCompleteListener(this){ task ->
                 if (task.isSuccessful) {
+                    this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    binding.loadingLayout.visibility = View.GONE
+
                     Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
 
                     intent = Intent(this, UserPage::class.java)
                     startActivity(intent)
                 } else {
-                    Toast.makeText(this, "이메일 또는 비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show()
+                    this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    binding.loadingLayout.visibility = View.GONE
+
+                    if(task.exception is FirebaseNetworkException){
+                        Toast.makeText(this, "네트워크를 확인해주세요.", Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(this, "이메일 또는 비밀번호를 확인해주세요.", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         } else{
